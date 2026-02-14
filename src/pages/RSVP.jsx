@@ -16,33 +16,24 @@ export default function RSVP() {
     fullName: "",
     email: "",
     phone: "",
-    partialDetails: "",
   });
   const [touched, setTouched] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
   const errors = useMemo(() => {
     const e = {};
-    if (!form.fullName.trim()) e.fullName = "Please enter your full name.";
-    if (!form.email.trim()) e.email = "Please enter your email.";
-    else if (!isValidEmail(form.email)) e.email = "Please enter a valid email.";
-    if (!form.phone.trim()) e.phone = "Please enter your phone number.";
-    if (choice === "partial" && !form.partialDetails.trim()) {
-      e.partialDetails = "Please specify location(s) and dates.";
-    }
+    if (!form.fullName.trim()) e.fullName = "Required";
+    if (!form.email.trim()) e.email = "Required";
+    else if (!isValidEmail(form.email)) e.email = "Invalid email";
+    if (!form.phone.trim()) e.phone = "Required";
     return e;
-  }, [form, choice]);
+  }, [form]);
 
   const canSubmit = Object.keys(errors).length === 0 && !submitting;
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setTouched({
-      fullName: true,
-      email: true,
-      phone: true,
-      partialDetails: true,
-    });
+    setTouched({ fullName: true, email: true, phone: true });
     if (!canSubmit) return;
 
     try {
@@ -56,144 +47,156 @@ export default function RSVP() {
 
   return (
     <Frame>
-      {/* ✅ Stable 3-row layout: Header (tight) + Scroll Body + Footer (pinned) */}
-      <div className="h-full min-h-0 w-full min-w-0 flex flex-col justify-start overflow-hidden pt-1 sm:pt-2">
-        {/* HEADER */}
-        <div className="shrink-0 min-w-0 flex flex-col items-center text-center">
-          <img
-            src={logo}
-            alt="Logo"
-            className="
-            w-auto mx-auto object-contain
-            h-[260px] sm:h-[280px] md:h-[300px]
-            -mt-10 sm:-mt-8 md:-mt-6
-            -mb-16
+      <div className="h-full w-full overflow-hidden">
+        {/* Layout: scrollable content + sticky submit/footer */}
+        <form
+          onSubmit={onSubmit}
+          className="
+            h-full w-full
+            flex flex-col
+            overflow-hidden
           "
-          />
+        >
+          {/* Scroll area */}
+          <div
+            className="
+              flex-1
+              overflow-y-auto no-scrollbar
+              flex flex-col items-center text-center
+              pb-[96px] /* reserve space so sticky footer doesn't cover content */
+              max-[414px]:scale-[0.97] origin-top
+            "
+          >
+            {/* top breathing space (lift on small screens) */}
+            <div className="h-[clamp(8px,2svh,18px)] max-[414px]:h-[2px]" />
 
-          <div className="font-display text-[clamp(13px,1.5vh,16px)] tracking-[0.14em] uppercase text-ink/85">
-            RSVP
-          </div>
+            {/* CREST */}
+            <img
+              src={logo}
+              alt="Logo"
+              className="
+                w-auto object-contain
+                h-[clamp(140px,20svh,210px)]
+                -mb-[clamp(55px,9svh,90px)]
+                max-[414px]:-mb-[42px]
+                max-[413px]:h-[clamp(130px,19svh,190px)]
+                max-[375px]:h-[clamp(120px,18svh,175px)]
+                max-[375px]:-mb-[clamp(46px,8svh,74px)]
+              "
+            />
 
-          <div className="mt-0.5 px-0.5 text-[11px] sm:text-[12px] font-body text-ink/65 leading-5 whitespace-nowrap">
-            Kindly confirm your place among the Pride.
-          </div>
-        </div>
+            {/* RSVP title */}
+            <div
+              className="
+    mt-[clamp(6px,1.2svh,10px)]
+    font-display
+    text-gold
+    leading-none
+    tracking-[0.02em]
+    text-[clamp(56px,9.6vw,86px)]
+  "
+            >
+              RSVP
+            </div>
 
-        {/* BODY (scrolls; scrollbar hidden) */}
-        <div className="mt-2 flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden no-scrollbar">
-          <form onSubmit={onSubmit} className="space-y-2.5">
-            <div className="space-y-2.5">
-              <InputRow
-                label="Full Name"
-                placeholder="Your full name"
+            {/* subtitle */}
+            <div className="mt-[6px] max-[414px]:mt-[2px] font-body text-[clamp(12px,1.7svh,14px)] text-ink/70">
+              kindly confirm your place among the Pride.
+            </div>
+
+            {/* Inputs */}
+            <div className="mt-[clamp(14px,2.6svh,20px)] w-full px-3 flex flex-col items-center gap-2.5">
+              <PillInput
+                placeholder="your full name"
                 value={form.fullName}
                 onChange={(v) => setForm((s) => ({ ...s, fullName: v }))}
                 onBlur={() => setTouched((t) => ({ ...t, fullName: true }))}
-                error={touched.fullName ? errors.fullName : ""}
               />
+              {touched.fullName && errors.fullName && (
+                <div className="w-[min(360px,86%)] -mt-1 text-left text-[12px] text-red-700">
+                  {errors.fullName}
+                </div>
+              )}
 
-              <InputRow
-                label="Email"
-                placeholder="you@example.com"
+              <PillInput
+                type="email"
+                placeholder="email"
                 value={form.email}
                 onChange={(v) => setForm((s) => ({ ...s, email: v }))}
                 onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-                error={touched.email ? errors.email : ""}
-                type="email"
               />
+              {touched.email && errors.email && (
+                <div className="w-[min(360px,86%)] -mt-1 text-left text-[12px] text-red-700">
+                  {errors.email}
+                </div>
+              )}
 
-              <InputRow
-                label="Phone"
-                placeholder="+234..."
+              <PillInput
+                type="tel"
+                placeholder="phone"
                 value={form.phone}
                 onChange={(v) => setForm((s) => ({ ...s, phone: v }))}
                 onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
-                error={touched.phone ? errors.phone : ""}
-                type="tel"
               />
-
-              <div className="pt-0.5 space-y-2.5">
-                <PillOption
-                  checked={choice === "yes"}
-                  onSelect={() => setChoice("yes")}
-                  label="Count me among the Pride"
-                />
-
-                <PillOption
-                  checked={choice === "partial"}
-                  onSelect={() => setChoice("partial")}
-                  label="I will join the Pride for a portion of the journey"
-                />
-
-                {choice === "partial" && (
-                  <div className="space-y-1.5 text-left min-w-0">
-                    <label className="text-[11px] font-body font-semibold text-ink/75">
-                      If attending partially, kindly specify location(s) and
-                      dates
-                    </label>
-
-                    <textarea
-                      value={form.partialDetails}
-                      onChange={(e) =>
-                        setForm((s) => ({
-                          ...s,
-                          partialDetails: e.target.value,
-                        }))
-                      }
-                      onBlur={() =>
-                        setTouched((t) => ({ ...t, partialDetails: true }))
-                      }
-                      rows={2}
-                      className="
-                      w-full resize-none rounded-2xl
-                      border border-line bg-white/35
-                      px-4 py-2 text-[13px]
-                      outline-none
-                      focus:bg-white/50
-                      focus:border-black/30
-                      transition
-                    "
-                      placeholder="e.g., Nairobi (Aug 16–18), Diani (Aug 20–22)"
-                    />
-
-                    {touched.partialDetails && errors.partialDetails && (
-                      <div className="text-[12px] text-red-700">
-                        {errors.partialDetails}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <PillOption
-                  checked={choice === "no"}
-                  onSelect={() => setChoice("no")}
-                  label="Regretfully, I am unable to attend"
-                />
-              </div>
+              {touched.phone && errors.phone && (
+                <div className="w-[min(360px,86%)] -mt-1 text-left text-[12px] text-red-700">
+                  {errors.phone}
+                </div>
+              )}
             </div>
 
-            {/* little breathing room so last pill doesn't touch the footer */}
-            <div className="h-3" />
-          </form>
-        </div>
+            {/* Choice pills (single-select) */}
+            <div className="mt-[clamp(14px,2.8svh,22px)] w-full px-3 flex flex-col items-center gap-2.5">
+              <ChoicePill
+                active={choice === "yes"}
+                onClick={() => setChoice("yes")}
+                label="count me among the Pride"
+              />
+              <ChoicePill
+                active={choice === "partial"}
+                onClick={() => setChoice("partial")}
+                label="I will join the Pride for a portion of the journey"
+              />
+              <ChoicePill
+                active={choice === "no"}
+                onClick={() => setChoice("no")}
+                label="Regretfully, I am unable to attend"
+              />
+            </div>
 
-        {/* FOOTER (pinned at bottom, no huge gap) */}
-        <div className="shrink-0 mt-auto pt-2 pb-2 sm:pb-3 md:pb-5 lg:pb-6">
-          <PrimaryButton type="submit" className="h-[54px]" onClick={onSubmit}>
-            <span className="block text-center leading-[1.05] font-bold">
-              {submitting ? "Submitting..." : "Submit RSVP"}
-            </span>
-          </PrimaryButton>
+            {/* tiny spacer (keep tight on small screens) */}
+            <div className="h-[clamp(14px,2.6svh,20px)] max-[414px]:h-[4px]" />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => nav("/info")}
-            className="mt-2 w-full text-[12px] font-body font-semibold text-ink/70 hover:text-ink transition"
+          {/* Sticky footer */}
+          <div
+            className="
+    sticky bottom-0 left-0 right-0
+    flex flex-col items-center
+    pb-[clamp(14px,3.5svh,22px)]
+    pt-3
+  "
           >
-            Back
-          </button>
-        </div>
+            <div className="w-full px-3 flex flex-col items-center">
+              <div className="w-[min(360px,86%)]">
+                <PrimaryButton
+                  type="submit"
+                  className="h-[46px] text-[18px] font-display"
+                >
+                  {submitting ? "submitting..." : "submit RSVP"}
+                </PrimaryButton>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => nav("/info")}
+                className="mt-3 italic font-body text-[13px] text-ink/70 hover:text-ink transition"
+              >
+                back
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </Frame>
   );
@@ -201,72 +204,84 @@ export default function RSVP() {
 
 /* ----------------------------- */
 
-function InputRow({
-  label,
-  value,
-  onChange,
-  onBlur,
-  placeholder,
-  error,
-  type = "text",
-}) {
+function PillInput({ value, onChange, onBlur, placeholder, type = "text" }) {
   return (
-    <div className="space-y-1 text-left min-w-0">
-      <label className="text-[11px] font-body font-semibold text-ink/75">
-        {label}
-      </label>
-
-      {/* ✅ Slightly shorter input height to prevent clipping on small screens */}
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={onBlur}
-        className="
-          w-full h-[38px] rounded-full
-          border border-line bg-white/30
-          px-4 text-[13px]
-          outline-none
-          focus:bg-white/45
-          focus:border-black/30
-          transition
-        "
-        placeholder={placeholder}
-      />
-
-      {error ? <div className="text-[12px] text-red-700">{error}</div> : null}
-    </div>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onBlur={onBlur}
+      placeholder={placeholder}
+      className="
+        w-[min(360px,86%)]
+        h-[38px]
+        rounded-full
+        border border-line
+        bg-white/18
+        px-5
+        text-center
+        text-[13px]
+        text-ink/80
+        placeholder:text-ink/35
+        outline-none
+        focus:bg-white/30
+        focus:border-black/25
+        transition
+      "
+    />
   );
 }
 
-function PillOption({ checked, onSelect, label }) {
+function ChoicePill({ active, onClick, label }) {
   return (
     <button
       type="button"
-      onClick={onSelect}
-      className={[
-        "w-full rounded-full px-4 py-2.5",
-        "border transition text-left min-w-0",
-        checked
-          ? "border-black/40 bg-white/45"
-          : "border-line bg-white/25 hover:bg-white/35",
-      ].join(" ")}
-      style={{
-        boxShadow: checked ? "inset 0 0 0 2px rgba(18,20,24,0.10)" : "none",
-      }}
-      aria-pressed={checked}
+      onClick={onClick}
+      className="
+        relative group
+        w-[min(420px,92%)]
+        rounded-full
+        px-5 py-2.5
+        border
+        transition-all duration-300
+        text-center
+        font-body
+        text-[13px]
+        overflow-hidden
+      "
+      style={
+        active
+          ? {
+              background: "linear-gradient(180deg, #1A0707 0%, #0F0303 100%)",
+              border: "1px solid rgba(0,0,0,0.7)",
+              boxShadow:
+                "0 10px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08)",
+            }
+          : { borderColor: "rgba(18,20,24,0.35)" }
+      }
+      aria-pressed={active}
     >
-      <span className="flex items-center gap-3 min-w-0">
-        <span
-          className={[
-            "h-4 w-4 rounded-full border shrink-0",
-            checked ? "border-ink bg-ink" : "border-black/35 bg-transparent",
-          ].join(" ")}
-        />
-        <span className="font-body text-[12.5px] text-ink leading-[1.25] break-words min-w-0">
-          {label}
-        </span>
+      <span
+        className="relative z-10 transition-colors duration-300 group-hover:text-[#D9BD63]"
+        style={{ color: active ? "#D9BD63" : "rgba(18,20,24,0.75)" }}
+      >
+        {label}
       </span>
+
+      {/* Hover dark background overlay (only when NOT active) */}
+      {!active && (
+        <span
+          className="
+            pointer-events-none absolute inset-0
+            opacity-0 group-hover:opacity-100
+            transition duration-300
+            rounded-full
+          "
+          style={{
+            background: "linear-gradient(180deg, #1A0707 0%, #0F0303 100%)",
+          }}
+        />
+      )}
     </button>
   );
 }

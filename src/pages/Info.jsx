@@ -10,58 +10,123 @@ export default function Info() {
 
   return (
     <Frame>
-      <div className="flex h-full w-full flex-col items-center text-center min-w-0">
-        {/* Pull content upward */}
-        <div className="w-full flex flex-col items-center text-center -mt-24 sm:-mt-20 md:-mt-16">
-          {/* ✅ Big logo (same as before) */}
-          {/* Logo — slightly reduced but still strong */}
+      {/* allow scrolling ONLY when small screens overflow */}
+      <div className="h-full w-full overflow-hidden">
+        <div
+          className="
+            h-full w-full
+            flex flex-col items-center text-center min-w-0
+            overflow-y-auto no-scrollbar
+            px-0
+          "
+        >
+          {/* Top breathing room */}
+          <div className="h-[clamp(8px,2svh,20px)] max-[375px]:h-[4px]" />
+
+          {/* CREST */}
           <img
             src={logo}
             alt="Logo"
             className="
-    w-auto mx-auto object-contain
-    h-[220px] sm:h-[240px] md:h-[260px]
-    -mb-10
-  "
+              w-auto object-contain
+              h-[clamp(160px,24svh,240px)]
+              -mb-[clamp(70px,12svh,110px)]
+              max-[413px]:h-[clamp(150px,22svh,210px)]
+              max-[413px]:-mb-[clamp(60px,11svh,95px)]
+              max-[375px]:h-[clamp(140px,20svh,190px)]
+              max-[375px]:-mb-[clamp(52px,10svh,82px)]
+            "
           />
 
-          {/* VERY tight to logo bottom */}
-          <div className="-mt-4 font-display text-[clamp(12px,1.6vh,14px)] tracking-[0.18em] uppercase text-ink/70">
-            The Royal Ascension
+          {/* the royal ascension */}
+          <div
+            className="
+              mt-[clamp(22px,3.8svh,32px)]
+              max-[375px]:mt-[clamp(14px,2.8svh,22px)]
+              font-display italic font-bold
+              text-[clamp(16px,2.1svh,20px)]
+              text-ink/80
+              leading-none
+            "
+          >
+            the royal ascension
           </div>
 
-          {/* Title stays visually isolated + bold */}
-          <div className="mt-8 font-display text-[clamp(46px,6.5vh,84px)] leading-[0.9] text-gold">
-            Irede &amp; Ibi
+          {/* 40th birthday celebration */}
+          <div className="mt-[6px] font-body text-[clamp(12px,1.6svh,14px)] text-ink/70">
+            40th birthday celebration
           </div>
 
-          {/* ✅ Re-added meta block (above save-the-date) */}
-          <div className="mt-4 font-body text-ink/80 w-full max-w-[min(48ch,100%)] px-1">
-            <div className="mt-1 text-[clamp(12.5px,1.55vh,15.5px)] leading-5 sm:leading-6 sm:whitespace-nowrap">
-              August 16th – August 22nd <span className="opacity-70">|</span>{" "}
-              Nairobi &amp; Diani, Kenya
-            </div>
+          {/* Title */}
+          <div
+            className="
+              mt-[clamp(18px,3.2svh,26px)]
+              max-[375px]:mt-[clamp(12px,2.4svh,18px)]
+              font-display
+              text-gold
+              leading-[0.9]
+              tracking-[-0.01em]
+              whitespace-nowrap
+              text-[clamp(52px,5.2vw,78px)]
+              max-[413px]:text-[clamp(50px,10vw,82px)]
+            "
+          >
+            Irede &amp; IbI
+          </div>
+
+          {/* Dates */}
+          <div
+            className="
+              mt-[clamp(14px,2.6svh,20px)]
+              max-[375px]:mt-[clamp(10px,2.1svh,14px)]
+              font-display italic font-semibold
+              text-[clamp(14px,1.9svh,18px)]
+              text-ink/80
+            "
+          >
+            August 16th - August 22nd
           </div>
 
           {/* Body copy */}
-          <div className="mt-6 font-body text-[clamp(13px,1.7vh,16px)] leading-7 text-ink/70 max-w-[min(34ch,100%)] px-2">
-            save the date for a joint milestone celebration rooted in culture,
-            style, and adventure — set against the beauty of Kenya.
+          <div
+            className="
+              mt-[clamp(16px,3svh,22px)]
+              max-[375px]:mt-[clamp(12px,2.2svh,16px)]
+              font-body
+              text-[clamp(13px,1.75svh,16px)]
+              leading-[1.65]
+              text-ink/70
+              max-w-[min(36ch,100%)]
+              px-3
+            "
+          >
+            save the date for a joint milestone
+            <br />
+            celebration rooted in culture, style,
+            <br />
+            and adventure — set against the
+            <br />
+            beauty of <span className="italic font-semibold">Kenya.</span>
           </div>
 
-          {/* More info */}
-          <div className="mt-6 font-body text-[clamp(12px,1.5vh,14px)] text-ink/60">
+          {/* more info */}
+          <div className="mt-[clamp(16px,3svh,22px)] max-[375px]:mt-[clamp(10px,2.2svh,14px)] font-body text-[clamp(12px,1.55svh,14px)] text-ink/60">
             more information to follow
           </div>
 
-          {/* CTA (unchanged) */}
-          <div className="mt-6 sm:mt-9 md:mt-10 w-full px-2">
-            <PrimaryButton onClick={() => nav("/rsvp")}>
-              Join the Pride
-            </PrimaryButton>
+          {/* Space before CTA (reduced further on small screens) */}
+          <div className="flex-1 min-h-[clamp(18px,5svh,64px)] max-[413px]:min-h-[12px] max-[375px]:min-h-[6px]" />
 
-            <div className="mt-3 text-[12.5px] font-body text-ink/60">
-              Please RSVP by <span className="font-semibold">March 30th</span>.
+          {/* CTA */}
+          <div className="w-full flex flex-col items-center pb-[clamp(18px,4svh,34px)] max-[375px]:pb-[14px]">
+            <div className="w-[min(340px,82%)]">
+              <PrimaryButton onClick={() => nav("/rsvp")} className="h-[44px]">
+                the Pride awaits!
+              </PrimaryButton>
+            </div>
+
+            <div className="mt-3 max-[375px]:mt-2 italic font-body text-[clamp(12px,1.55svh,14px)] text-ink/60">
+              please RSVP by March 30th
             </div>
           </div>
         </div>

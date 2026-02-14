@@ -10,37 +10,67 @@ export default function Cover() {
 
   return (
     <Frame>
-      {/* Keep your working layout, just make it scale cleanly on all screens */}
-      <div className="flex flex-col items-center text-center -mt-6 sm:-mt-8 md:-mt-10">
-        {/* Logo: bigger + responsive scaling */}
+      {/* RELATIVE so we can pin the button exactly */}
+      <div className="relative h-full w-full flex flex-col items-center text-center min-w-0 overflow-hidden">
+        {/* BIG LOGO (transparent padding -> compensate with negative margin) */}
         <img
           src={logo}
           alt="Logo"
           className="
-    w-auto mx-auto object-contain
-    h-[clamp(320px,42vh,520px)]
-    -mb-2 pt-1
-  "
+            w-auto object-contain
+            h-[clamp(340px,46svh,520px)]
+            -mb-[clamp(110px,16svh,190px)]
+            max-[413px]:h-[clamp(300px,44svh,460px)]
+            max-[413px]:-mb-[clamp(95px,15svh,170px)]
+          "
         />
 
-        {/* Title: scales smoothly */}
-        <div className="font-display text-[clamp(16px,1.9vh,19px)] tracking-[0.14em] uppercase text-ink/85">
-          The Royal Ascension
+        {/* Subtitle sits directly under the *visible* crest */}
+        <div
+          className="
+    font-display italic font-bold
+    text-[clamp(16px,2.2svh,20px)]
+    text-ink/80
+    leading-none
+  "
+        >
+          the royal ascension
         </div>
 
-        {/* Subtitle: scales smoothly */}
-        <div className="mt-5 sm:mt-6 font-body text-[clamp(13px,1.7vh,15px)] text-ink/70">
-          Welcome to the Den.
+        {/* Title (cap large-screen size so it never breaks the frame) */}
+        <div
+          className="
+    mt-[clamp(12px,2.2svh,20px)]
+    font-display
+    text-gold
+    leading-[0.9]
+    tracking-[-0.01em]
+    whitespace-nowrap
+    text-[clamp(52px,5vw,72px)]
+    max-[413px]:text-[clamp(50px,10vw,82px)]
+  "
+        >
+          Irede &amp; IbI
         </div>
 
-        {/* CTA: premium spacing */}
-        <div className="mt-8 sm:mt-10 w-full">
-          <PrimaryButton onClick={() => nav("/info")}>Enter Here</PrimaryButton>
-        </div>
+        {/* BUTTON AREA pinned to match reference image */}
+        <div
+          className="
+            absolute left-1/2 -translate-x-1/2
+            top-[74%] -translate-y-1/2
+            w-full flex flex-col items-center
+            pointer-events-auto
+          "
+        >
+          <div className="w-[min(340px,82%)]">
+            <PrimaryButton onClick={() => nav("/info")} className="h-[44px]">
+              welcome to the Den
+            </PrimaryButton>
+          </div>
 
-        {/* Helper text */}
-        <div className="mt-5 sm:mt-6 text-[12px] font-body text-ink/55">
-          Tap to proceed
+          <div className="mt-2 italic font-body text-[12px] text-ink/55">
+            tap to proceed
+          </div>
         </div>
       </div>
     </Frame>

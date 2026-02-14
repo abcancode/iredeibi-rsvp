@@ -3,35 +3,68 @@
 @tailwind utilities;
 
 /* -----------------------------
-   FONTS
+   FONTS (Local Variable Fonts)
    ----------------------------- */
 
-/* Source Sans 3 Light (local file) */
+/* Source Sans 3 (Normal) */
 @font-face {
   font-family: "SourceSans3";
-  src: url("../assets/fonts/SourceSans3-VariableFont_wght.ttf")
+  src: url("./assets/fonts/SourceSans3-VariableFont_wght.ttf")
     format("truetype");
-  font-weight: 500;
+  font-weight: 200 900;
   font-style: normal;
   font-display: swap;
 }
-/* Canela Text Regular */
 
+/* Source Sans 3 (Italic) */
 @font-face {
-  font-family: "CanelaText";
-  src: url("../assets/fonts/CanelaText-Regular-Trial.otf") format("opentype");
-  font-weight: 400;
+  font-family: "SourceSans3";
+  src: url("./assets/fonts/SourceSans3-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Playfair Display (Normal) */
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("./assets/fonts/PlayfairDisplay-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400 900;
   font-style: normal;
   font-display: swap;
+}
+
+/* Playfair Display (Italic) */
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("./assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* -----------------------------
+   GLOBAL RESETS (Important!)
+   ----------------------------- */
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 html,
 body {
-  height: 100%;
   overflow-x: hidden;
 }
 
 body {
+  margin: 0;
+  background: #0b0c0f;
+  color: #121418;
   font-family:
     SourceSans3,
     system-ui,
@@ -39,8 +72,6 @@ body {
     Segoe UI,
     Roboto,
     sans-serif;
-  background: #0b0c0f;
-  color: #121418;
 }
 
 /* Hide scrollbars but keep scrolling */
