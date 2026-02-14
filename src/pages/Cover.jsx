@@ -35,9 +35,7 @@ export default function Cover() {
 
         {/* CTA: premium spacing */}
         <div className="mt-8 sm:mt-10 w-full">
-          <PrimaryButton onClick={() => nav("/info")}>
-            Enter the Den
-          </PrimaryButton>
+          <PrimaryButton onClick={() => nav("/info")}>Enter Here</PrimaryButton>
         </div>
 
         {/* Helper text */}
