@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         ink: "#121418",
-        gold: "#D6BB6A",
+        gold: "#DBB923",
         parchment: "#ECE8DD",
         line: "rgba(18,20,24,0.35)",
       },
