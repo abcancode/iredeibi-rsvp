@@ -25,7 +25,7 @@ export default function Frame({ children }) {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="min-h-screen w-full bg-black/25 px-4 py-10 flex items-center justify-center">
-        <div className="relative w-full max-w-[420px]">
+        <div className="relative w-full max-w-[460px] md:max-w-[520px]">
           <svg
             className="w-full h-auto block drop-shadow-[0_20px_55px_rgba(0,0,0,0.55)]"
             viewBox={`${VB.minX} ${VB.minY} ${VB.width} ${VB.height}`}
@@ -68,8 +68,9 @@ export default function Frame({ children }) {
 
           {/* Content overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            {/* Padding tuned to match your layout spacing */}
-            <div className="w-full px-10 py-12">{children}</div>
+            <div className="w-full px-10 md:px-12 py-14 md:py-16">
+              {children}
+            </div>
           </div>
         </div>
       </div>

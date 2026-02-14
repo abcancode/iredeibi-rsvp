@@ -57,15 +57,15 @@ export default function RSVP() {
 
   return (
     <Frame>
-      {/* Pull everything up a bit so it sits properly inside the frame */}
-      <div className="w-full -mt-10">
+      {/* Responsive top offset (safer on smaller screens) */}
+      <div className="w-full -mt-8 md:-mt-10">
         {/* Header */}
         <div className="flex flex-col items-center text-center">
-          {/* Compact logo (RSVP screen should be lighter than Cover/Info) */}
+          {/* Bigger logo + responsive scaling */}
           <img
             src={logo}
             alt="Logo"
-            className="h-[70px] md:h-[80px] w-auto mx-auto -mb-1 max-w-full object-contain"
+            className="h-[95px] sm:h-[110px] md:h-[125px] w-auto mx-auto -mb-2 max-w-full object-contain"
           />
 
           <div className="mt-2 font-display text-[16px] tracking-[0.14em] uppercase text-ink/85">
@@ -77,110 +77,113 @@ export default function RSVP() {
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={onSubmit} className="mt-5 space-y-3">
-          <InputRow
-            label="Full Name"
-            placeholder="Your full name"
-            value={form.fullName}
-            onChange={(v) => setForm((s) => ({ ...s, fullName: v }))}
-            onBlur={() => setTouched((t) => ({ ...t, fullName: true }))}
-            error={touched.fullName ? errors.fullName : ""}
-          />
-
-          <InputRow
-            label="Email"
-            placeholder="you@example.com"
-            value={form.email}
-            onChange={(v) => setForm((s) => ({ ...s, email: v }))}
-            onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-            error={touched.email ? errors.email : ""}
-            type="email"
-          />
-
-          <InputRow
-            label="Phone"
-            placeholder="+234..."
-            value={form.phone}
-            onChange={(v) => setForm((s) => ({ ...s, phone: v }))}
-            onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
-            error={touched.phone ? errors.phone : ""}
-            type="tel"
-          />
-
-          {/* Options (template-style pills) */}
-          <div className="pt-1 space-y-3">
-            <PillOption
-              checked={choice === "yes"}
-              onSelect={() => setChoice("yes")}
-              label="Count me among the Pride"
+        {/* Form wrapper:
+            Scrolls INSIDE the frame on small-height screens, stays normal on md+ */}
+        <div className="mt-5 max-h-[52vh] sm:max-h-[56vh] md:max-h-none overflow-y-auto pr-1">
+          <form onSubmit={onSubmit} className="space-y-3">
+            <InputRow
+              label="Full Name"
+              placeholder="Your full name"
+              value={form.fullName}
+              onChange={(v) => setForm((s) => ({ ...s, fullName: v }))}
+              onBlur={() => setTouched((t) => ({ ...t, fullName: true }))}
+              error={touched.fullName ? errors.fullName : ""}
             />
 
-            <PillOption
-              checked={choice === "partial"}
-              onSelect={() => setChoice("partial")}
-              label="I will join the Pride for a portion of the journey"
+            <InputRow
+              label="Email"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={(v) => setForm((s) => ({ ...s, email: v }))}
+              onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+              error={touched.email ? errors.email : ""}
+              type="email"
             />
 
-            {choice === "partial" && (
-              <div className="space-y-2 text-left">
-                <label className="text-[11.5px] font-body font-semibold text-ink/75">
-                  If attending partially, kindly specify location(s) and dates
-                </label>
-
-                <textarea
-                  value={form.partialDetails}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, partialDetails: e.target.value }))
-                  }
-                  onBlur={() =>
-                    setTouched((t) => ({ ...t, partialDetails: true }))
-                  }
-                  rows={2}
-                  className="
-                    w-full resize-none rounded-2xl
-                    border border-line bg-white/35
-                    px-4 py-2.5 text-[13.5px]
-                    outline-none
-                    focus:bg-white/50
-                    focus:border-black/30
-                    transition
-                  "
-                  placeholder="e.g., Nairobi (Aug 16–18), Diani (Aug 20–22)"
-                />
-
-                {touched.partialDetails && errors.partialDetails && (
-                  <div className="text-[12px] text-red-700">
-                    {errors.partialDetails}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <PillOption
-              checked={choice === "no"}
-              onSelect={() => setChoice("no")}
-              label="Regretfully, I am unable to attend"
+            <InputRow
+              label="Phone"
+              placeholder="+234..."
+              value={form.phone}
+              onChange={(v) => setForm((s) => ({ ...s, phone: v }))}
+              onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
+              error={touched.phone ? errors.phone : ""}
+              type="tel"
             />
-          </div>
 
-          {/* Actions */}
-          <div className="pt-1">
-            <PrimaryButton type="submit" className="h-[56px]">
-              <span className="block text-center leading-[1.05] font-bold">
-                {submitting ? "Submitting..." : "Submit RSVP"}
-              </span>
-            </PrimaryButton>
+            {/* Options (template-style pills) */}
+            <div className="pt-1 space-y-3">
+              <PillOption
+                checked={choice === "yes"}
+                onSelect={() => setChoice("yes")}
+                label="Count me among the Pride"
+              />
 
-            <button
-              type="button"
-              onClick={() => nav("/info")}
-              className="mt-3 w-full text-[12px] font-body font-semibold text-ink/70 hover:text-ink transition"
-            >
-              Back
-            </button>
-          </div>
-        </form>
+              <PillOption
+                checked={choice === "partial"}
+                onSelect={() => setChoice("partial")}
+                label="I will join the Pride for a portion of the journey"
+              />
+
+              {choice === "partial" && (
+                <div className="space-y-2 text-left">
+                  <label className="text-[11.5px] font-body font-semibold text-ink/75">
+                    If attending partially, kindly specify location(s) and dates
+                  </label>
+
+                  <textarea
+                    value={form.partialDetails}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, partialDetails: e.target.value }))
+                    }
+                    onBlur={() =>
+                      setTouched((t) => ({ ...t, partialDetails: true }))
+                    }
+                    rows={2}
+                    className="
+                      w-full resize-none rounded-2xl
+                      border border-line bg-white/35
+                      px-4 py-2.5 text-[13.5px]
+                      outline-none
+                      focus:bg-white/50
+                      focus:border-black/30
+                      transition
+                    "
+                    placeholder="e.g., Nairobi (Aug 16–18), Diani (Aug 20–22)"
+                  />
+
+                  {touched.partialDetails && errors.partialDetails && (
+                    <div className="text-[12px] text-red-700">
+                      {errors.partialDetails}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <PillOption
+                checked={choice === "no"}
+                onSelect={() => setChoice("no")}
+                label="Regretfully, I am unable to attend"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="pt-1 pb-2">
+              <PrimaryButton type="submit" className="h-[56px]">
+                <span className="block text-center leading-[1.05] font-bold">
+                  {submitting ? "Submitting..." : "Submit RSVP"}
+                </span>
+              </PrimaryButton>
+
+              <button
+                type="button"
+                onClick={() => nav("/info")}
+                className="mt-3 w-full text-[12px] font-body font-semibold text-ink/70 hover:text-ink transition"
+              >
+                Back
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </Frame>
   );
@@ -245,11 +248,11 @@ function PillOption({ checked, onSelect, label }) {
       <span className="flex items-center gap-3">
         <span
           className={[
-            "h-4 w-4 rounded-full border",
+            "h-4 w-4 rounded-full border shrink-0",
             checked ? "border-ink bg-ink" : "border-black/35 bg-transparent",
           ].join(" ")}
         />
-        <span className="font-body text-[13px] text-ink leading-[1.25]">
+        <span className="font-body text-[12.5px] sm:text-[13px] text-ink leading-[1.25] break-words">
           {label}
         </span>
       </span>
