@@ -27,9 +27,8 @@ export default function PrimaryButton({
           "linear-gradient(135deg, #C8A74A 0%, #E5C96F 50%, #C8A74A 100%)",
         border: "2px solid rgba(18,20,24,0.35)",
         boxShadow: `
-          inset 0 1px 0 rgba(255,255,255,0.35),
-          0 18px 45px rgba(0,0,0,0.35)
-        `,
+    inset 0 1px 0 rgba(255,255,255,0.35)
+  `,
       }}
     >
       {/* Inner double-ring (luxury stationery feel) */}
