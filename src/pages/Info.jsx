@@ -55,7 +55,7 @@ export default function Info() {
           </div>
 
           {/* CTA (unchanged) */}
-          <div className="mt-4 w-full px-2">
+          <div className="mt-6 sm:mt-9 md:mt-10 w-full px-2">
             <PrimaryButton onClick={() => nav("/rsvp")}>
               Join the Pride
             </PrimaryButton>
