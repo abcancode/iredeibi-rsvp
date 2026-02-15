@@ -1,5 +1,5 @@
 // src/pages/RSVP.jsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Frame from "../components/Frame";
 import PrimaryButton from "../components/PrimaryButton";
@@ -8,17 +8,17 @@ import logo from "../assets/logo/logo.png";
 const isValidEmail = (email) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email.trim());
 
+const SCRIPT_URL = import.meta.env.VITE_RSVP_SCRIPT_URL;
+
 export default function RSVP() {
   const nav = useNavigate();
 
-  const [choice, setChoice] = useState("yes"); // yes | partial | no
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-  });
+  const [choice, setChoice] = useState("yes");
+  const [form, setForm] = useState({ fullName: "", email: "", phone: "" });
   const [touched, setTouched] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+  const htmlFormRef = useRef(null);
 
   const errors = useMemo(() => {
     const e = {};
@@ -38,8 +38,14 @@ export default function RSVP() {
 
     try {
       setSubmitting(true);
-      await new Promise((r) => setTimeout(r, 600));
-      nav("/thanks", { state: { fullName: form.fullName, choice } });
+
+      // ✅ Submit via native HTML form (bypasses CORS completely)
+      if (htmlFormRef.current) htmlFormRef.current.submit();
+
+      // Give the request a moment to fire, then navigate
+      setTimeout(() => {
+        nav("/thanks", { state: { fullName: form.fullName, choice } });
+      }, 350);
     } finally {
       setSubmitting(false);
     }
@@ -48,14 +54,27 @@ export default function RSVP() {
   return (
     <Frame>
       <div className="h-full w-full overflow-hidden">
-        {/* Layout: scrollable content + sticky submit/footer */}
+        {/* Hidden iframe target to submit without leaving the page */}
+        <iframe title="rsvp_sink" name="rsvp_sink" className="hidden" />
+
+        {/* Hidden native form that posts to Apps Script */}
+        <form
+          ref={htmlFormRef}
+          action={SCRIPT_URL}
+          method="POST"
+          target="rsvp_sink"
+          className="hidden"
+        >
+          <input name="fullName" value={form.fullName} readOnly />
+          <input name="email" value={form.email} readOnly />
+          <input name="phone" value={form.phone} readOnly />
+          <input name="choice" value={choice} readOnly />
+        </form>
+
+        {/* Visible UI form */}
         <form
           onSubmit={onSubmit}
-          className="
-            h-full w-full
-            flex flex-col
-            overflow-hidden
-          "
+          className="h-full w-full flex flex-col overflow-hidden"
         >
           {/* Scroll area */}
           <div
@@ -63,14 +82,12 @@ export default function RSVP() {
               flex-1
               overflow-y-auto no-scrollbar
               flex flex-col items-center text-center
-              pb-[96px] /* reserve space so sticky footer doesn't cover content */
+              pb-[96px]
               max-[414px]:scale-[0.97] origin-top
             "
           >
-            {/* top breathing space (lift on small screens) */}
             <div className="h-[clamp(8px,2svh,18px)] max-[414px]:h-[2px]" />
 
-            {/* CREST */}
             <img
               src={logo}
               alt="Logo"
@@ -85,26 +102,20 @@ export default function RSVP() {
               "
             />
 
-            {/* RSVP title */}
             <div
               className="
-    mt-[clamp(6px,1.2svh,10px)]
-    font-display
-    text-gold
-    leading-none
-    tracking-[0.02em]
-    text-[clamp(56px,9.6vw,86px)]
-  "
+                mt-[clamp(6px,1.2svh,10px)]
+                font-display text-gold leading-none tracking-[0.02em]
+                text-[clamp(56px,9.6vw,86px)]
+              "
             >
               RSVP
             </div>
 
-            {/* subtitle */}
             <div className="mt-[6px] max-[414px]:mt-[2px] font-body text-[clamp(12px,1.7svh,14px)] text-ink/70">
               kindly confirm your place among the Pride.
             </div>
 
-            {/* Inputs */}
             <div className="mt-[clamp(14px,2.6svh,20px)] w-full px-3 flex flex-col items-center gap-2.5">
               <PillInput
                 placeholder="your full name"
@@ -145,7 +156,6 @@ export default function RSVP() {
               )}
             </div>
 
-            {/* Choice pills (single-select) */}
             <div className="mt-[clamp(14px,2.8svh,22px)] w-full px-3 flex flex-col items-center gap-2.5">
               <ChoicePill
                 active={choice === "yes"}
@@ -164,18 +174,17 @@ export default function RSVP() {
               />
             </div>
 
-            {/* tiny spacer (keep tight on small screens) */}
             <div className="h-[clamp(14px,2.6svh,20px)] max-[414px]:h-[4px]" />
           </div>
 
-          {/* Sticky footer */}
+          {/* Sticky footer (no background panel) */}
           <div
             className="
-    sticky bottom-0 left-0 right-0
-    flex flex-col items-center
-    pb-[clamp(14px,3.5svh,22px)]
-    pt-3
-  "
+              sticky bottom-0 left-0 right-0
+              flex flex-col items-center
+              pb-[clamp(14px,3.5svh,22px)]
+              pt-3
+            "
           >
             <div className="w-full px-3 flex flex-col items-center">
               <div className="w-[min(360px,86%)]">
@@ -268,7 +277,6 @@ function ChoicePill({ active, onClick, label }) {
         {label}
       </span>
 
-      {/* Hover dark background overlay (only when NOT active) */}
       {!active && (
         <span
           className="
